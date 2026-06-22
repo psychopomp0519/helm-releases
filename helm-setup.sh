@@ -38,8 +38,15 @@ else
   else say "  ✗ codex 실패 → https://developers.openai.com/codex/cli"; fi
 fi
 
-# PATH 안내
-case ":$PATH:" in *":$BIN:"*) :;; *) say "`n⚠️  $BIN 가 PATH에 없음 — ~/.bashrc 에 추가하세요: export PATH=\"$BIN:\$PATH\"";; esac
+# ~/.local/bin 을 PATH에 추가 (현재 셸 + ~/.bashrc 영구) — claude/codex 가 잡히게
+case ":$PATH:" in *":$BIN:"*) : ;; *) export PATH="$BIN:$PATH" ;; esac
+RC="$HOME/.bashrc"
+if [ -f "$RC" ] && ! grep -q '\.local/bin' "$RC"; then
+  printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$RC"
+  say ""
+  say "  PATH 영구 추가됨: ~/.bashrc (새 터미널부터 자동, 지금 창은 아래 한 줄)"
+  say "    source ~/.bashrc"
+fi
 
 # ---------- 결과 ----------
 step "결과"
